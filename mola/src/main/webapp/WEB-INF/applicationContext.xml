@@ -1,0 +1,74 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean id="tradeManager" class="com.mola.oanda.managers.impl.OandaTradeManagerImpl"/>
+    <bean id="tickerService" class="com.mola.oanda.services.impl.OandaTickerServiceImpl"
+          depends-on="chartService"/>
+    <bean id="persistenceManager" class="com.mola.persistence.managers.MolaPersistenceManager"/>
+    <bean id="pipeLine" class="com.mola.model.DefaultPipeline"/>
+    <bean id="chartService" class="com.mola.oanda.services.impl.OandaChartServiceImpl"/>
+    <bean id="marketDirectionService" class="com.mola.oanda.services.impl.OandaMarketDirectionServiceImpl"/>
+    <bean id="modelBuilder" class="com.mola.weka.models.WekaModelBuilder"/>
+    <bean id="wekaFilter" class="com.mola.model.filters.WekaFilter"/>
+    <bean id="fastStochasticFilter" class="com.mola.model.filters.FastStochasticFilter"/>
+    <bean id="fxClient" class="com.oanda.fxtrade.api.API" factory-method="createFXGame"/>
+    <!--<bean id="eventService" class="com.mola.oanda.services.impl.OandaEventsServiceImpl"/>-->
+
+    <!--<bean id="fxClient" class="com.oanda.fxtrade.api.API" factory-method="createFXTrade"/>-->
+    <bean id="chartFilters" class="java.util.LinkedHashSet">
+        <constructor-arg>
+            <list>
+                <ref bean="wekaFilter"/>
+                <ref bean="fastStochasticFilter"/>
+            </list>
+        </constructor-arg>
+    </bean>
+    <bean id="fetchChartTimerTask" class="com.mola.managers.impl.FetchChartTimerTask"
+          scope="prototype">
+    </bean>
+
+    <bean id="chartFetcher" class="com.mola.charts.util.ChartFetcher"
+          scope="prototype"/>
+
+    <!-- TODO this should be dynamic -->
+    <bean id="tradeStrategy" class="com.mola.strategy.TradeStrategy"/>
+    <bean id="tradeStrategies" class="java.util.LinkedHashSet">
+        <constructor-arg>
+            <list>
+                <ref bean="tradeStrategy"/>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <!-- Oanda Url and Trade Accounts TODO should be in config file-->
+    <bean id="oandaAccount" class="java.lang.String">
+        <constructor-arg>
+            <value>0</value>
+        </constructor-arg>
+    </bean>
+
+    <bean id="oandaStreamUrl" class="java.lang.String">
+        <constructor-arg>
+            <!--<value>https://stream-fxpractice.oanda.com/</value> &lt;!&ndash; Practice &ndash;&gt;-->
+            <value>http://stream-sandbox.oanda.com</value> <!-- Sandbox-->
+            <!--<value>https://stream-fxtrade.oanda.com</value>  &lt;!&ndash; Live &ndash;&gt;-->
+        </constructor-arg>
+    </bean>
+
+    <bean id="oandaRatesUrl" class="java.lang.String">
+        <constructor-arg>
+            <value>http://api-sandbox.oanda.com</value> <!-- sandbox -->
+            <!--<value>https://api-fxpractice.oanda.com</value> &lt;!&ndash; Practice &ndash;&gt;-->
+            <!--<value>https://api-fxtrade.oanda.com</value>  &lt;!&ndash; Live &ndash;&gt;-->
+        </constructor-arg>
+    </bean>
+
+    <bean id="oandaApiToken" class="java.lang.String">
+        <constructor-arg>
+            <value></value>
+        </constructor-arg>
+    </bean>
+
+</beans>

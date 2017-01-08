@@ -1,0 +1,1 @@
+Automated Forex trading platform with WEKA integration for advanced analytics.
